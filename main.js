@@ -15,6 +15,8 @@ const articles = [
 
 const img = document.querySelector('img');
 const h1 = document.querySelector('h1');
+const dots = [...document.querySelectorAll('.dots span')];
+
 
 let active = 0;
 
@@ -30,48 +32,41 @@ const changeSlide = ()=>{
 
     img.src = articles[active].image;
     h1.textContent = articles[active].title;
-
+    changeDot()
 }
 
-setInterval(changeSlide,2000);
+// e=>...
+
+const changeDot = ()=>{
+    const index = dots.findIndex(dot=>dot.classList.contains('active'));
+    dots[index].classList.remove('active');
+    dots[active].classList.add('active')
+}
+
+let intervalIndex = setInterval(changeSlide,2000);
 
 
+// Obsługa klawiszy:
 
-// const div = document.querySelector('div');
-// const divTest = document.querySelector('.test');
-// const spans = [...document.querySelectorAll('span')];
+// funkcja keyChangeSlide
+const keyChangeSlide = e =>{
+    //  if, który sprawdzi czy klikneliśmy strzałke w lewo LUB prawo
+    if(e.code == 'ArrowLeft' || e.code == 'ArrowRight'){
+        clearInterval(intervalIndex);
+        e.code == 'ArrowLeft' ? active-- : active++;
+        if(active < 0){
+            active = articles.length - 1;
+        }
+        if(active == articles.length){
+            active = 0;
+        }
 
+        img.src = articles[active].image;
+        h1.textContent = articles[active].title;
+        changeDot()
+        intervalIndex = setInterval(changeSlide,2000);
+    }
+}
 
-
-// articles.forEach(article=>{
-//     const section = document.createElement('section'); // <section>
-
-//     section.innerHTML = `
-//     <h2>${article.title}</h2>
-//     <p>${article.text}</p>
-//     `
-
-//     div.appendChild(section);
-// })
-
-
-// divTest.addEventListener('click',()=>{
-//     divTest.classList.toggle('active') // add, remove, toggle
-// })
-
-// let index = 0;
-
-// const intervalIndex = setInterval(()=>{
-//     if(index >= articles.length){
-//         index = 0;
-//         return clearInterval(intervalIndex)
-//     }
-//     divTest.textContent = articles[index].title;
-//     index++;
-// },1000)
-
-// const changeDot = ()=>{
-//     const activeDot = spans.findIndex(span => span.classList.contains('active'));
-// }
-
-// changeDot();
+// Nasłuchiwanie na kiknięcie PRZYCISKU
+window.addEventListener('keydown',keyChangeSlide)
